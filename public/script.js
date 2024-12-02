@@ -139,7 +139,7 @@ function formatWithCommas(numberString) {
 }
 
 const SPREADSHEET_ID = '14R9efcJ2hGE3mCgmJqi6TNbqkm4GFe91LEAuCyCa4O0';
-const RANGE = 'don_hang!A:BG'; // Mở rộng phạm vi đến cột BG
+const RANGE = 'don_hang!A:BO'; // Mở rộng phạm vi đến cột BO
 const RANGE_CHITIET = 'don_hang_chi_tiet!F:AI'; // Dải dữ liệu từ sheet 'don_hang_chi_tiet'
 const API_KEY = 'AIzaSyA9g2qFUolpsu3_HVHOebdZb0NXnQgXlFM';
 
@@ -251,6 +251,7 @@ async function findRowInSheet(maDonhangURI) {
                 orderDetails = {
                     phuongThucban: row[0] || '', // Cột A
                     maDonhang: row[1] || '', // Cột B
+                    maHopdong: row[66] || '', // Cột BO
                     donviPhutrach: row[5] || '', // Cột F
                     tenNguoilienhe: row[13] || '', // Cột N
                     tenKhachhangcuoi: row[23] || '', // Cột X
@@ -306,6 +307,13 @@ function processFoundData(orderDetails) {
     });
     if (sotienBangchu) updateElement('sotienBangchu', sotienBangchu);
 
+    // Kiểm tra và hiển thị mã hợp đồng
+    if (orderDetails.maHopdong && orderDetails.maHopdong.trim() !== '') {
+        const hopdongContainer = document.getElementById('hopdong-container');
+        document.getElementById('maHopdong').textContent = orderDetails.maHopdong;
+        hopdongContainer.style.display = 'block';
+    }
+
     // Gọi các hàm hiển thị nội dung
     displayHTML(orderDetails);
     displayConditions(orderDetails);
@@ -352,7 +360,6 @@ function displayHTML() {
     const tenNguoilienhe = orderDetails.tenNguoilienhe || '';
     const tenKhachhangcuoi = orderDetails.tenKhachhangcuoi || '';
     const tenTochuc = orderDetails.tenTochuc || '';
-    const diachi = orderDetails.diachi || '';
     const diachiChitiet = orderDetails.diachiChitiet || '';
     const diachiKhachhangcuoi = orderDetails.diachiKhachhangcuoi || '';
     const tenNhanvien = orderDetails.tenNhanvien || '';
@@ -584,8 +591,8 @@ function displayDetailData(filteredRows) {
                     <td class="borderedcol-8">${item.soLuong || ''}</td>
                     <td class="borderedcol-9">${item.dvt || ''}</td>
                     <td class="borderedcol-10">${item.khoiLuong || ''}</td>
-                    <td class="borderedcol-11">${item.dongianpp || ''}</td>
-                    <td class="borderedcol-12">${item.giabannpp || ''}</td>
+                    <td class="borderedcol-11">${item.dongia || ''}</td>
+                    <td class="borderedcol-12">${item.giaban || ''}</td>
                 </tr>
             `;
         } else {
@@ -601,8 +608,8 @@ function displayDetailData(filteredRows) {
                     <td class="borderedcol-8">${item.soLuong || ''}</td>
                     <td class="borderedcol-9">${item.dvt || ''}</td>
                     <td class="borderedcol-10">${item.khoiLuong || ''}</td>
-                    <td class="borderedcol-11">${item.dongianpp || ''}</td>
-                    <td class="borderedcol-12">${item.giabannpp || ''}</td>
+                    <td class="borderedcol-11">${item.dongia || ''}</td>
+                    <td class="borderedcol-12">${item.giaban || ''}</td>
                 </tr>
             `;
         }
@@ -625,8 +632,8 @@ function extractDetailDataFromRow(row) {
         soLuong: row[16],
         dvt: row[17],
         khoiLuong: row[18],
-        dongianpp: row[28],
-        giabannpp: row[29],
+        dongia: row[28],
+        giaban: row[29],
     };
 }
 

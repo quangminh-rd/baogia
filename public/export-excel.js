@@ -13,9 +13,11 @@ document.getElementById('export-excel').addEventListener('click', async function
             alert('Thông tin đơn hàng chưa được tải.');
             return;
         }
+        const maHienThi = orderDetails.maHopdong && orderDetails.maHopdong.trim() !== ""
+            ? orderDetails.maHopdong
+            : orderDetails.maDonhang;
 
-        // Điền dữ liệu vào các ô trong Excel
-        worksheet.getCell('A3').value = `Số: ${orderDetails.maDonhang || ''}`;
+        worksheet.getCell('A3').value = `Số: ${maHienThi || ''}`;
         if (orderDetails.donviPhutrach === "BP. BH1" && orderDetails.phuongThucban !== "Bán chéo") {
             worksheet.getCell('A4').value = 'Kính gửi:';
             worksheet.getCell('C4').value = orderDetails.tenNguoilienhe || '';
@@ -117,14 +119,14 @@ document.getElementById('export-excel').addEventListener('click', async function
             worksheet.getCell('J8').value = '1900 0282';
         }
         worksheet.getCell('H512').value = orderDetails.tongSobo || '';
-        worksheet.getCell('L512').value = formatNumber(orderDetails.congnpp || '');
-        worksheet.getCell('H513').value = orderDetails.mucChietkhaunpp || '';
-        worksheet.getCell('L513').value = formatNumber(orderDetails.giatriChietkhaunpp || '');
-        worksheet.getCell('L514').value = formatNumber(orderDetails.phiVanchuyenlapdatnpp || '');
-        worksheet.getCell('H515').value = `${orderDetails.mucthueGTGTnpp || ''}%`;
-        worksheet.getCell('L515').value = formatNumber(orderDetails.thueGTGTnpp || '');
-        worksheet.getCell('L516').value = formatNumber(orderDetails.tamUngnpp || '');
-        worksheet.getCell('L517').value = formatNumber(orderDetails.sotienConthieunpp || '');
+        worksheet.getCell('L512').value = formatNumber(orderDetails.cong || '');
+        worksheet.getCell('H513').value = orderDetails.mucChietkhau || '';
+        worksheet.getCell('L513').value = formatNumber(orderDetails.giatriChietkhau || '');
+        worksheet.getCell('L514').value = formatNumber(orderDetails.phiVanchuyenlapdat || '');
+        worksheet.getCell('H515').value = `${orderDetails.mucthueGTGT || ''}%`;
+        worksheet.getCell('L515').value = formatNumber(orderDetails.thueGTGT || '');
+        worksheet.getCell('L516').value = formatNumber(orderDetails.tamUng || '');
+        worksheet.getCell('L517').value = formatNumber(orderDetails.sotienConthieu || '');
         worksheet.getCell('A518').value = `Bằng chữ: ${orderDetails.sotienBangchu || ''}`;
         // Điền chi tiết sản phẩm vào Excel
         let startRow = 12; // Ví dụ: bắt đầu từ dòng 12
@@ -140,17 +142,17 @@ document.getElementById('export-excel').addEventListener('click', async function
             row.getCell(8).value = item.soLuong;
             row.getCell(9).value = item.dvt;
             row.getCell(10).value = item.khoiLuong;
-            row.getCell(11).value = formatNumber(item.dongianpp);
-            row.getCell(12).value = formatNumber(item.giabannpp);
+            row.getCell(11).value = formatNumber(item.dongia);
+            row.getCell(12).value = formatNumber(item.giaban);
         });
-        if (orderDetails.thueGTGTnpp === 0) {
+        if (orderDetails.thueGTGT === 0) {
             worksheet.getCell('A519').value = '1. Giá trên đã bao gồm thuế GTGT.';
         } else {
             worksheet.getCell('A519').value = '1. Giá trên chưa bao gồm thuế GTGT.';
         }
 
         // Điều kiện cho phí vận chuyển và phương thức bán
-        if ((orderDetails.phiVanchuyenlapdatnpp === "" || orderDetails.phiVanchuyenlapdatnpp === 0) && orderDetails.phuongThucban !== "Bán lẻ") {
+        if ((orderDetails.phiVanchuyenlapdat === "" || orderDetails.phiVanchuyenlapdat === 0) && orderDetails.phuongThucban !== "Bán lẻ") {
             worksheet.getCell('A520').value = '2. Giá trên chưa bao gồm phí vận chuyển, lắp đặt.';
         } else {
             worksheet.getCell('A520').value = '2. Giá trên đã bao gồm phí vận chuyển, lắp đặt.';
